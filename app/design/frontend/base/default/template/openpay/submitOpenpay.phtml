@@ -1,0 +1,32 @@
+<div style="width:100%;text-align:center;">
+    <div class="loader"></div>
+    <p>Redirecting to the Payment Page.... Please wait</p>
+</div>
+<?php
+$data = $this->getData();
+$dir = $data['dir'];
+include ($dir.'/'.$data['paymentPage']->paymentpageFile);
+?>
+<style>
+.loader {
+    display:inline-block;
+    width: 0;
+	height:0;
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+	border-bottom: 50px solid #4183D7;
+    border-top: 50px solid #F5AB35;
+    -webkit-animation: loader 1.2s ease-in-out infinite alternate;
+    animation: loader 1.2s ease-in-out infinite alternate;
+    margin-top: 100px;
+}
+
+@keyframes loader {
+   from {transform: rotate(0deg);}
+   to {transform: rotate(720deg);}
+}
+@-webkit-keyframes loader {
+   from {-webkit-transform: rotate(0deg);}
+   to {-webkit-transform: rotate(720deg);}
+}
+</style>

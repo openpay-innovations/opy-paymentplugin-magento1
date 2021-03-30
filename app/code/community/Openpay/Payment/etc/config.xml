@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+/**
+ * Module configuration file. Declare the custom payment method.
+ *
+ * @category Openpay
+ * @package  Openpay_Payment
+ * @author   ideatarmac.com
+ */
+ -->
+ 
+<config>
+    <modules>
+        <Openpay_Payment>
+            <version>1.0.0</version>
+        </Openpay_Payment>
+    </modules>
+ 
+    <global>
+        <helpers>
+            <openpay_payment>
+                <class>Openpay_Payment_Helper</class>
+            </openpay_payment>
+        </helpers>
+        <blocks>
+            <openpay_payment>
+                <class>Openpay_Payment_Block</class>
+            </openpay_payment>
+        </blocks>
+         
+        <models>
+            <openpay_payment>
+                <class>Openpay_Payment_Model</class>
+            </openpay_payment>
+        </models>
+        <resources>
+            <openpay_setup>
+                <setup>
+                    <module>Openpay_Payment</module>
+                </setup>
+            </openpay_setup>
+        </resources>
+        <!--<events>
+            <sales_order_shipment_save_after>
+                <observers>
+                    <openpay_payment_sales_order_shipment_save_after>
+                        <type>singleton</type>
+                        <class>openpay_payment/observer</class>
+                        <method>salesOrderShipmentSaveAfter</method>
+                    </openpay_payment_sales_order_shipment_save_after>
+                </observers>
+            </sales_order_shipment_save_after>
+        </events>-->
+    </global>
+ 
+    <default>
+        <payment>
+            <openpay>
+                <active>1</active>
+                <model>openpay_payment/openpay</model>
+                <title>Openpay - Buy now. Pay smarter.</title>
+                <description></description>
+                <frequency>30</frequency>
+                <payment_mode>test</payment_mode>
+                <region>Au</region>
+                <schedule_limit>0 0 * * *</schedule_limit>
+                <schedule_pending_order_status>0 * * * *</schedule_pending_order_status>
+            </openpay>
+        </payment>
+    </default>
+   
+    <frontend>
+        <secure_url>
+            <openpay_tokenization>/openpay/tokenization</openpay_tokenization>
+        </secure_url>
+        <events>
+            <payment_method_is_active>
+                <observers>
+                    <disable_paymentmethod>
+                        <class>Openpay_Payment_Model_Observer</class>
+                        <method>paymentMethodIsActive</method>
+                    </disable_paymentmethod>
+                </observers>
+            </payment_method_is_active>
+        </events>
+        <routers>
+            <openpay_payment>
+                <use>standard</use>
+                <args>
+                    <module>Openpay_Payment</module>
+                    <frontName>openpay</frontName>
+                </args>
+            </openpay_payment>
+        </routers>
+        <layout>	
+            <updates>	
+                <openpay_payment>	
+                    <file>openpay/payment.xml</file>	
+                </openpay_payment>	
+            </updates>	
+        </layout>
+    </frontend>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <openpay_payment after="Mage_Adminhtml">Openpay_Payment</openpay_payment>
+                    </modules>
+                    </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    
+    <crontab>
+        <jobs>
+            <openpay_limits>
+                <schedule><cron_expr>0 0 * * *</cron_expr></schedule>
+                <run><model>openpay_payment/observer::getLimitsFromOpenpay</model></run>
+            </openpay_limits>
+            <check_pending_order_status>
+                <schedule><cron_expr>0 * * * *</cron_expr></schedule>
+                <run><model>openpay_payment/observer::cancelPendingOrders</model></run>
+            </check_pending_order_status>
+        </jobs>
+    </crontab>
+</config>

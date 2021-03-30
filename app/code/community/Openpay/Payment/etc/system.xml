@@ -1,0 +1,157 @@
+<?xml version="1.0"?><!--
+/**
+ * System configuration file. Set up configuration options for this payment method.
+ *
+ * @category Openpay
+ * @package  Openpay_Payment
+ * @author   ideatarmac.com
+ */
+ -->
+
+<config>    
+    <sections>
+        <payment>
+            <groups>
+                <openpay translate="label" module="openpay_payment">
+                    <label>Openpay Payment</label>
+                    <sort_order>1001</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>1</sort_order>
+                        </active>
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>2</sort_order>
+                        </title>
+                        <description translate="label">
+                            <label>Description</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>3</sort_order>
+                        </description>
+                        <payment_mode translate="label">
+                            <label>Mode</label>
+                            <frontend_type>radios</frontend_type>
+                            <source_model>openpay_payment/source_paymentMode</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>4</sort_order>
+                        </payment_mode>
+                        <region translate="label">
+                            <label>Region</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>openpay_payment/source_regions</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>5</sort_order>
+                        </region>
+                        <auth_user translate="label">
+                            <label>Openpay Username</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>6</sort_order>
+                        </auth_user>
+                        <auth_key translate="label">
+                            <label>Openpay Password</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>7</sort_order>
+                        </auth_key>
+                        <min_price translate="label">
+                            <label>Minimum Checkout Value</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>Openpay_Payment_Block_Field_Disable</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>8</sort_order>
+                        </min_price>
+                        <max_price translate="label">
+                            <label>Maximum Checkout Value</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>Openpay_Payment_Block_Field_Disable</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>9</sort_order>
+                        </max_price>
+                        <run translate="label">
+                            <label></label>
+                            <button_label>Run Min/Max !</button_label>
+                            <frontend_model>openpay_payment/adminhtml_system_config_form_button</frontend_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </run>  
+                        <frequency translate="label">
+                            <label>Update Pending Orders older than</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>Openpay_Payment_Block_Field_Disable</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>11</sort_order>
+                        </frequency>
+                        <schedule_limit translate="label">
+                            <label>Schedule for Limit Configuration</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>Openpay_Payment_Block_Field_Disable</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>12</sort_order>
+                        </schedule_limit> 
+                        <schedule_pending_order_status translate="label">
+                            <label>Schedule for Pending Order Status</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>Openpay_Payment_Block_Field_Disable</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>13</sort_order>
+                        </schedule_pending_order_status> 
+                        <disable_categories translate="label">
+                            <label>Disabled Categories</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>openpay_payment/source_disableCategories</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>14</sort_order>
+                        </disable_categories> 
+                        <disable_products translate="label">
+                            <label>Disabled Products</label>
+                            <frontend_type>text</frontend_type>
+                            <comment>Add product skus with comma and no space seperated.</comment>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <sort_order>15</sort_order>
+                        </disable_products>  
+                    </fields>
+                </openpay>
+            </groups>
+        </payment>
+    </sections>
+</config>

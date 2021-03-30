@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    function run() {
+        var modevalue;
+        var modeList = document.getElementsByName('groups[openpay][fields][payment_mode][value]');
+        for (var i=0, len=modeList.length; i<len; i++) {
+            if ( modeList[i].checked ) {
+                modevalue = modeList[i].value;
+                break;
+            }
+        }
+        var authData = {
+            auth_user: document.getElementById('payment_openpay_auth_user').value,
+            auth_token: document.getElementById('payment_openpay_auth_key').value,
+            payment_mode: modevalue,
+            region: document.getElementById('payment_openpay_region').value
+        };
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>',
+            {
+                method : "post",      
+                parameters : authData,
+                onSuccess: function(response){
+                var resultText = '';
+                var data = '';
+                resultText = 'Values updated successfully!';
+                data = JSON.parse(response.responseText);
+                if (data.success) {
+                    if (typeof data.min !== 'undefined') {
+                        document.getElementById('payment_openpay_min_price').value = data.min;
+                    }
+                    if (typeof data.max !== 'undefined') {
+                        document.getElementById('payment_openpay_max_price').value = data.max;
+                    }
+                    document.getElementById('custom_message_span').classList.remove('error');
+                    document.getElementById('custom_message_span').innerText = resultText;
+                } else {
+                    document.getElementById('custom_message_span').classList.add('error');
+                    document.getElementById('custom_message_span').innerText = data.message;
+                }
+            }
+        });
+    }
+</script>
+
+<?php echo $this->getButtonHtml() ?>
+<span class="custom-indicator" id="custom_span">
+    <br><br><span id="custom_message_span"></span>
+</span>
+<style>
+.error {
+    color: red;
+}
+</style>

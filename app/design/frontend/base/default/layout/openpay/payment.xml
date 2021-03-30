@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <checkout_onepage_index>
+        <reference name="before_body_end">
+            <block type="openpay_payment/checkout_method" name="openpay.payment.checkout.js" template="openpay/js.phtml"/>
+        </reference>
+    </checkout_onepage_index>
+    <onestepcheckout_index_index>
+        <reference name="before_body_end">
+            <block type="openpay_payment/checkout_method" name="openpay.payment.checkout.js" template="openpay/js.phtml"/>
+        </reference>
+    </onestepcheckout_index_index>
+</layout>

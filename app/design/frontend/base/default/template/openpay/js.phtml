@@ -1,0 +1,52 @@
+<?php if ($this->isActive()) : ?>
+<?php
+$request = $this->getRequest();
+$modulename = $request->getModuleName();
+$isOnestepcheckoutEnable = false;
+if ($modulename == 'onestepcheckout') {
+    $isOnestepcheckoutEnable = true;
+}
+?>
+    <script type="text/javascript">
+        //<![CDATA[
+        var modulename = '<?php echo $modulename; ?>';
+        var Openpay = Openpay || {};
+        Openpay.Checkout = Openpay.Checkout || {};
+        Openpay.Checkout.settings = {
+            methodCode: 'openpay',
+            isRedirect: true,
+            checkoutUrl: '<?php echo $this->escapeUrl($this->getCheckoutRedirectUrl()); ?>',
+            isOnestepcheckoutEnable: '<?php echo $isOnestepcheckoutEnable; ?>'
+        };
+        //]]>
+    </script>
+    <script type="text/javascript" src="<?php echo $this->getSkinUrl(
+    Openpay_Payment_Block_Checkout_Method::CHECKOUT_JS_PATH); ?>"></script>
+<script>
+if (Openpay.Checkout.settings.isOnestepcheckoutEnable) {
+    if (!window.isOpenpayJsLoaded) {
+        Event.observe('onestepcheckout-place-order', 'click', function (e) {
+        var form = $('onestepcheckout-form');
+        var elements = Form.getElements(form);
+        var validator = new Validation(form);
+        if (validator.validate()) {
+            var method = null;
+            for (var i=0; i<elements.length; i++) {
+                if (elements[i].name=='payment[method]' || elements[i].name == 'form_key') {
+                    if (elements[i].checked) {
+                        method = elements[i].value;
+                    }
+                }
+            }
+            if (method == Openpay.Checkout.settings.methodCode) {
+                already_placing_order = true;
+                alert('An error occured while trying to checkout with Openpay. Please try again!');
+            } else {
+                already_placing_order = false;
+            }
+        }
+    }, false);
+    }
+}
+</script>
+<?php endif; ?>

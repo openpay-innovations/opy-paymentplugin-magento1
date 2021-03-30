@@ -1,0 +1,21 @@
+<?xml version="1.0"?><!--
+/**
+ * File to enable module.
+ *
+ * @category Openpay
+ * @package  Openpay_Payment
+ * @author   ideatarmac.com
+ */
+ -->
+
+<config>
+    <modules>
+        <Openpay_Payment>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Mage_Payment />
+            </depends>
+        </Openpay_Payment>
+    </modules>
+</config>
