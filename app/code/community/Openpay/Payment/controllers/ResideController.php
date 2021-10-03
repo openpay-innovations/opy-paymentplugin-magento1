@@ -47,7 +47,7 @@ class Openpay_Payment_ResideController extends Mage_Core_Controller_Front_Action
                 $this->_redirect('checkout/cart');
             }
             $totalFromCart = round((float)$quote->getGrandTotal(), 2);
-            if ((int)($totalFromCart * 100) == $purchasePrice) {
+            if (($totalFromCart * 100) == $purchasePrice) {
                 $quote->collectTotals();
                 try {
                     /** @var $service Mage_Sales_Model_Service_Quote */
