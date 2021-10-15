@@ -78,7 +78,7 @@ class Openpay_Payment_Model_Openpay extends Mage_Payment_Model_Method_Abstract
         $reduce = round((float)$amount, 2);
         $prices = [
             'newPrice' => 0,
-            'reducePriceBy'=> ($reduce * 100), 
+            'reducePriceBy'=> (int)round($reduce * 100), 
             'isFullRefund' => $isFullRefund
         ];  
         
