@@ -55,10 +55,6 @@ class Openpay_Payment_Model_Observer
                 $authToken = $backendParams['auth_token'];
                 $paymentMode = $backendParams['payment_mode'];
                 $region = $backendParams['region'];
-                Mage::getModel('core/config')->saveConfig(Openpay_Payment_Helper_Data::PATH_AUTH_USER, $authUser);
-                Mage::getModel('core/config')->saveConfig(Openpay_Payment_Helper_Data::PATH_AUTH_KEY, $authToken); 
-                Mage::getModel('core/config')->saveConfig(Openpay_Payment_Helper_Data::PATH_PAYMENT_MODE, $paymentMode);
-                Mage::getModel('core/config')->saveConfig(Openpay_Payment_Helper_Data::PATH_REGION, $region);
             } else {
                 $backendParams = null;
             }
@@ -76,11 +72,9 @@ class Openpay_Payment_Model_Observer
             
             if ($min != $openpayMinPrice) {
                 $minField = Openpay_Payment_Helper_Data::PATH_MIN_PRICE;
-                Mage::getModel('core/config')->saveConfig($minField, $openpayMinPrice);
             }
             if ($max != $openpayMaxPrice) {
                 $maxField = Openpay_Payment_Helper_Data::PATH_MAX_PRICE;
-                Mage::getModel('core/config')->saveConfig($maxField, $openpayMaxPrice);
             }
             Mage::getModel('core/config')->cleanCache();
             $response = ['min' => $openpayMinPrice, 'max' => $openpayMaxPrice];    
@@ -162,12 +156,21 @@ class Openpay_Payment_Model_Observer
         $order = $shipment->getOrder();
         $method = $order->getPayment()->getMethod();
         if ($method == 'openpay') {
-            try {
-                $sdk = $this->_getHelper()->getPaymentmanager();
-                $sdk->setUrlAttributes([$order->getToken()]);
-                $response = $sdk->dispatch();
-            } catch (Exception $e) {
-                Mage::Log($e->getMessage(), null, 'openpaymagento.log', true);
+            $shippedItemsQty = 0;
+            $refundedItemsQty = 0;
+            $totalItemsQty = $order->getData('total_qty_ordered');
+            foreach ($order->getAllVisibleItems() as $item) {
+                $shippedItemsQty += $item->getQtyShipped(); 
+                $refundedItemsQty += $item->getQtyRefunded();
+            }
+            if (((int)$shippedItemsQty + (int)$refundedItemsQty) == (int)$totalItemsQty) {
+                try {
+                    $sdk = $this->_getHelper()->getPaymentmanager();
+                    $sdk->setUrlAttributes([$order->getToken()]);
+                    $response = $sdk->dispatch();
+                } catch (Exception $e) {
+                    Mage::Log($e->getMessage(), null, 'openpaymagento.log', true);
+                }
             }
         }
     }
@@ -180,5 +183,68 @@ class Openpay_Payment_Model_Observer
     protected function _getHelper()
     {
         return Mage::helper('openpay_payment');
+    }
+
+    public function getLimitsFromCron()
+    {
+                $resource = Mage::getSingleton('core/resource');
+        $connection = $resource->getConnection('core_read');
+        $tableName = $resource->getTableName('core_config_data');
+        $select = $connection->select()->from(
+            $tableName
+        )->where(
+            'path = ?',
+            'payment/openpay/min_price'
+        );
+        $rows = $connection->fetchAll($select);
+        $backofficeParams = [];
+        foreach ($rows as $row) {
+            $enabled = Mage::getStoreConfig(
+                Openpay_Payment_Helper_Data::PATH_ENABLE,
+                $row['scope_id']
+            );
+            if ($enabled !== '1') {
+                continue;
+            }
+            $backofficeParams['payment_mode'] = Mage::getStoreConfig(
+                Openpay_Payment_Helper_Data::PATH_PAYMENT_MODE,
+                $row['scope_id']
+            );
+            $backofficeParams['region'] = Mage::getStoreConfig(
+                Openpay_Payment_Helper_Data::PATH_REGION,
+                $row['scope_id']
+            );
+            $backofficeParams['auth_user'] = Mage::getStoreConfig(
+                Openpay_Payment_Helper_Data::PATH_AUTH_USER,
+                $row['scope_id']
+            );
+            $backofficeParams['auth_token'] = Mage::getStoreConfig(
+                Openpay_Payment_Helper_Data::PATH_AUTH_KEY,
+                $row['scope_id']
+            );
+            $values = Mage::getModel('openpay_payment/observer')->getLimitsFromOpenpay($backofficeParams);
+
+            Mage::getConfig()->saveConfig(Openpay_Payment_Helper_Data::PATH_MIN_PRICE, $values['min'], $row['scope'], $row['scope_id']);
+            Mage::getConfig()->saveConfig(Openpay_Payment_Helper_Data::PATH_MAX_PRICE, $values['max'], $row['scope'], $row['scope_id']); 
+        }
+    }
+    
+    public function addGoodsDispatchedButton($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View) {
+            $message = Mage::helper('sales')->__('Are you sure you want to dispatch goods manually?');
+            $order = $block->getOrder();
+            $method = $order->getPayment()->getMethod();
+            if ($method == 'openpay') {
+                $block->addButton('goods_dispatched_btn', 
+                    array( 
+                        'label' => Mage::helper('sales')->__('Goods Dispatched'), 
+                        'onclick' => "confirmSetLocation('{$message}', '{$block->getUrl('openpay_admin/adminhtml_index/dispatched')}')", 
+                        'class' => 'go' 
+                    )
+                );
+            }
+        }
     }
 }

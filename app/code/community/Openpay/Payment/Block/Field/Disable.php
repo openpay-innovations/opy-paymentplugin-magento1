@@ -16,8 +16,8 @@ class Openpay_Payment_Block_Field_Disable extends Mage_Adminhtml_Block_System_Co
      * @return string
      */
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element) 
-    {        
-        $element->setDisabled(true);
+    {     
+        $element->setData('readonly', 1);   
         return parent::_getElementHtml($element);
     }
 }

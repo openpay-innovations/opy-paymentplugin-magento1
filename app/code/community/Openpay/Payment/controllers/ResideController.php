@@ -33,44 +33,44 @@ class Openpay_Payment_ResideController extends Mage_Core_Controller_Front_Action
             $session = Mage::getSingleton('checkout/session');
             $quote = $session->getQuote();
             if (!empty($quote->getGrandTotal())) {
-            $purchasePrice = 0;
+                $purchasePrice = 0;
 
-            try {
-                /** @var $paymentmanager \BusinessLayer\Openpay\PaymentManager */
-                $paymentmanager = $this->_getHelper()->getPaymentmanager();
-                $paymentmanager->setUrlAttributes(array($planid));
-                $response = $paymentmanager->getOrder();
-                $purchasePrice = $response->purchasePrice;              
-            } catch(\Exception $e) {
-                Mage::Log($e->getMessage(), null, 'openpaymagento.log', true);
-                $this->addErrorMessage('Sorry there is an error. Please contact us');
-                $this->_redirect('checkout/cart');
-            }
-            $totalFromCart = round((float)$quote->getGrandTotal(), 2);
-            if (($totalFromCart * 100) == $purchasePrice) {
-                $quote->collectTotals();
                 try {
-                    /** @var $service Mage_Sales_Model_Service_Quote */
-                    $service = Mage::getModel('sales/service_quote', $quote);
-                    $service->submitAll();
-                    $quote->save();
-                    /** @var  $order Mage_Sales_Model_Order */
-                    $order = $service->getOrder();
-                    $order->setToken($planid)->save();
-                    $session->setLastQuoteId($quoteid)
-                            ->setLastSuccessQuoteId($quoteid);
-                    $session->setLastOrderId($order->getId())
-                        ->setLastRealOrderId($order->getIncrementId());
+                    /** @var $paymentmanager \BusinessLayer\Openpay\PaymentManager */
+                    $paymentmanager = $this->_getHelper()->getPaymentmanager();
+                    $paymentmanager->setUrlAttributes(array($planid));
+                    $response = $paymentmanager->getOrder();
+                    $purchasePrice = $response->purchasePrice;              
                 } catch(\Exception $e) {
-                    Mage::logException($e);
+                    Mage::Log($e->getMessage(), null, 'openpaymagento.log', true);
+                    $this->addErrorMessage('Sorry there is an error. Please contact us');
+                    $this->_redirect('checkout/cart');
                 }
-            } else {
-                $this->addErrorMessage('Cart price is different to Openpay plan amount.');
-                $this->_redirect('checkout/cart');
-            }
+                $totalFromCart = round((float)$quote->getGrandTotal(), 2);
+                if (($totalFromCart * 100) == $purchasePrice) {
+                    $quote->collectTotals();
+                    try {
+                        /** @var $service Mage_Sales_Model_Service_Quote */
+                        $service = Mage::getModel('sales/service_quote', $quote);
+                        $service->submitAll();
+                        $quote->save();
+                        /** @var  $order Mage_Sales_Model_Order */
+                        $order = $service->getOrder();
+                        $order->setToken($planid)->save();
+                        $session->setLastQuoteId($quoteid)
+                                ->setLastSuccessQuoteId($quoteid);
+                        $session->setLastOrderId($order->getId())
+                            ->setLastRealOrderId($order->getIncrementId());
+                    } catch(\Exception $e) {
+                        Mage::logException($e);
+                    }
+                } else {
+                    $this->addErrorMessage('Cart price is different to Openpay plan amount.');
+                    $this->_redirect('checkout/cart');
+                }
 
-            Mage::helper('openpay_payment/checkout')->generateInvoice($order);
-            $this->_redirect('checkout/onepage/success');
+                Mage::helper('openpay_payment/checkout')->generateInvoice($order);
+                $this->_redirect('checkout/onepage/success');
             } else {
                 $this->_redirect('checkout/cart');
             }
