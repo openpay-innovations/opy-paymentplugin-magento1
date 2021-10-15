@@ -34,7 +34,7 @@ class Shopsystem
         }
         $shopCart->total = $cart->getGrandTotal();
         $integerTotal = round((float)$cart->getGrandTotal(), 2);
-        $shopCart->integerTotal =($integerTotal * 100);
+        $shopCart->integerTotal =(int)round($integerTotal * 100);
         $shopCart->deliveryAddress = $cart->getShippingAddress()->getData();
         $shopCart->invoiceAddress = $cart->getBillingAddress()->getData();
 
