@@ -14,7 +14,30 @@
             <version>1.0.0</version>
         </Openpay_Payment>
     </modules>
- 
+    <admin>
+        <routers>
+            <orderstatus>
+                <use>admin</use>
+                <args>
+                    <module>Openpay_Payment</module>
+                    <frontName>openpay_admin</frontName>
+                </args>
+            </orderstatus>
+        </routers>
+    </admin>
+    <adminhtml>
+        <events>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <orderstatus_core_block_abstract_prepare_layout_before>
+                        <type>model</type>
+                        <class>Openpay_Payment_Model_Observer</class>
+                        <method>addGoodsDispatchedButton</method>
+                    </orderstatus_core_block_abstract_prepare_layout_before>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
+        </events>
+    </adminhtml>
     <global>
         <helpers>
             <openpay_payment>
@@ -115,7 +138,7 @@
         <jobs>
             <openpay_limits>
                 <schedule><cron_expr>0 0 * * *</cron_expr></schedule>
-                <run><model>openpay_payment/observer::getLimitsFromOpenpay</model></run>
+                <run><model>openpay_payment/observer::getLimitsFromCron</model></run>
             </openpay_limits>
             <check_pending_order_status>
                 <schedule><cron_expr>0 * * * *</cron_expr></schedule>
