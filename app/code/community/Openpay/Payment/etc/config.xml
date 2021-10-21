@@ -62,7 +62,7 @@
                 </setup>
             </openpay_setup>
         </resources>
-        <!--<events>
+        <events>
             <sales_order_shipment_save_after>
                 <observers>
                     <openpay_payment_sales_order_shipment_save_after>
@@ -72,7 +72,7 @@
                     </openpay_payment_sales_order_shipment_save_after>
                 </observers>
             </sales_order_shipment_save_after>
-        </events>-->
+        </events>
     </global>
  
     <default>
