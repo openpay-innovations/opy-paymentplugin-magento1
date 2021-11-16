@@ -61,6 +61,7 @@ class Openpay_Payment_Model_Observer
             
             /** @var $paymentmanager \BusinessLayer\Openpay\PaymentManager */
             $paymentmanagert = $this->_getHelper()->getPaymentmanager($backendParams);
+            $paymentmanagert->setUrlAttributes(array('online'));
             $response = $paymentmanagert->getConfiguration();
             
             if (empty($response)) {
