@@ -26,7 +26,7 @@ Requirements
 - cURL extension for PHP
 - JSON extension for PHP
 - Multibyte String extension for PHP
-- Magento should be pre-installed on your web server. The extension has been tested on Magento version 2.x to 2.4.X
+- Magento should be pre-installed on your web server. The extension has been tested on Magento version 1.8.x to 1.9.X.
 - SSL: A valid security certificate is required to work over a secure channel (HTTPS) from the Magento Admin Panel or while submitting the form data from the storefront. Self-signed SSL certificates are not supported
 - Curl (version 7.20.0 - 7.4.0)
 
